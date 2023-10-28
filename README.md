@@ -386,3 +386,136 @@ plugins:
   - serverless-another-plugin
   
 ```
+
+
+### Serverless Variables
+
+#### Variables Introduction
+
+Serverless framework allows you to add dynamic data into serverless.yaml. They are known as Variables of Serverless Framework.
+
+They help in separation of concerns. You can keep your dynamic data separate from the configuration file.
+
+#### Variables
+Serverless variables allows you to,
+
+- Load data from environmental variables.
+- Reference and load variables through CLI options.
+- Refer the same serverless.yml file and fetch data from some other properties.
+- Access data from YAML/JSON files.
+- Combine variable references and overwrite each other.
+
+#### Reference to Serverless Yaml
+- You can access the value of any property from the same serverless yaml file.
+- We use ${self:someProperty} syntax to access the value of someProperty.
+
+```yaml
+service: my-service
+provider: azure
+custom:
+  schedule: cron(0 * * * *)
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - timer: ${self:custom.schedule}
+  fresco:
+    handler: handler.fresco
+    events:
+      - timer: ${self:custom.schedule}
+```
+
+The above file -timer refers data from custom.schedule.
+
+
+#### Refer External Files
+
+- Serverless allows you to refer variables from external json,yaml or js files.
+- To refer a variable in yaml file, use the syntax `${file(../filename.yml):someProp}`.
+- To refer a variable in json file, use the syntax `${file(../filename.json):someProp}`.
+- It is important to specify relative path and proper file extension.
+
+#### Refer yaml/json Files
+
+Consider the below-given example to understand how to refer external variables.
+```yaml
+# customFile.yml
+
+cron: cron(0 * * * *)
+```
+
+The above file specifies a yaml property cron with value cron(0 * * * *).
+
+
+#### Refer yaml/json Files
+serverless.yaml corresponding to the custom file is given below.
+```yaml
+# serverless.yml
+
+service: my-service
+provider: azure
+custom: ${file(../customFile.yml)} 
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - timer: ${file(../customFile.yml):cron}property
+  fresco:
+    handler: handler.fresco
+    events:
+      - timer: ${self:custom.cron} 
+```
+
+Observer how,
+
+- custom section is referring to the entire file content.
+- timer section of hello function is referring to the particular property.
+- timer section of fresco function is referring to the self:cutom which in turn is referring to the file.
+
+
+#### Refer Js File
+
+- Just like yaml and json you can also use javascript file to provide variables to serverless.yaml.
+- You can use ${file(../someFile.js):someModule} syntax to access it in serverless.yaml.
+Consider the below give js file.
+```js
+// config.js
+module.exports.cron = () => {
+   return 'cron(0 * * * *)';
+}
+```
+
+You can use both named and unnamed exports.
+
+The given serverless.yaml file uses config.js file, defined earlier.
+```yaml
+# serverless.yml
+service: new-service
+provider: azure
+
+functions:
+  hello:
+      handler: handler.hello
+      events:
+        - timer: ${file(../config.js):cron} 
+
+```
+
+- timer section refers to the cron property defined in the file config.js.
+
+#### Multiple Configuration Files
+When you are using serverless for your real-world application, you would require to use many resources,events and many more in your serverless.yaml.
+
+This will bloat your serverless.yaml and thereby decreasing the readability of the file.
+
+To make your serverless.yaml file reader-friendly, you can go with external files to declare those resources or events.
+
+e.g.;
+
+    resources:
+    Resources: ${file(azure-resources.json)}
+
+The above serverless.yaml file loads Resources from file azure-resources.json.
+
+## Serverless CLI
