@@ -519,3 +519,96 @@ e.g.;
 The above serverless.yaml file loads Resources from file azure-resources.json.
 
 ## Serverless CLI
+### Serverless CLI Introduction
+* As mentioned earlier, Serverless is a CLI tool.
+* Serverless provides you with various commands that can be used to deploy and manage your serverless functions.
+* Serverless commands can be extended using plugins.
+* New commands can be added using plugins.
+
+### AWS - Config
+* The purpose of serverless config is to allow to enable or disable automatic update mechanism of the Framework. 
+
+* Turn on auto update mechanism
+
+```
+serverless config --autoupdate
+```
+
+* Turn off auto update mechanism
+```
+serverless config --no-autoupdate
+```
+
+### AWS - Config Credentials
+
+```
+serverless config credentials --provider provider --key key --secret secret
+```
+#### Options
+
+  * --provider or -p The provider (in this case aws). Required.
+
+  * --key or -k The aws_access_key_id. Required.
+
+  *  --secret or -s The aws_secret_access_key. Required.
+
+  * --profile or -n The name of the profile which should be 
+    created.
+
+  * --overwrite or -o Overwrite the profile if it exists.
+
+
+#### Configure the default profile
+```
+serverless config credentials --provider aws --key 1234 --secret 5678
+```
+This example will configure the default profile with the aws_access_key_id of 1234 and the aws_secret_access_key of 5678.
+
+#### Update an existing profile
+
+```
+serverless config credentials \
+  --provider aws \
+  --key 1234 \
+  --secret 5678 \
+  --profile custom-profile \
+  --overwrite
+```
+
+This example overwrite custom-profile profile with the aws_access_key_id of 1234 and the aws_secret_access_key of 5678.
+
+### AWS - Create
+
+Creates a new service in the current working directory based on the provided template.
+
+#### Create a service in the current working directory:
+```
+serverless create --template aws-nodejs
+```
+#### Create a service in a new folder:
+```
+serverless create --template aws-nodejs --path myService
+```
+#### Create a service in a new folder using a custom template:
+
+```
+serverless create \
+  --template-url https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs \
+  --path myService
+
+```
+#### Options
+
+* --template or -t The name of one of the available templates. Required if --template-url and * --template-path are not present.
+* --template-url or -u A URL pointing to a remotely hosted template. Required if --template and --template-path are not present.
+* --template-path The local path of your template. Required if --template and --template-url are not present.
+* --path or -p The path where the service should be created.
+* --name or -n the name of the service in serverless.yml.
+
+
+#### Creating a new service
+
+```
+serverless create --template aws-nodejs --name my-special-service
+```
+This example will generate scaffolding for a service with AWS as a provider and nodejs as runtime. The scaffolding will be generated in the current working directory.
