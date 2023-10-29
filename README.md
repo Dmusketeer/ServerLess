@@ -1,4 +1,5 @@
-# ServerLess
+ServerLess
+-------------------------------
 
 Welcome to the world of Serverless.
 
@@ -612,3 +613,126 @@ serverless create \
 serverless create --template aws-nodejs --name my-special-service
 ```
 This example will generate scaffolding for a service with AWS as a provider and nodejs as runtime. The scaffolding will be generated in the current working directory.
+
+### Serverless Install
+install command of serverless framework will install a service from a git repo.
+
+* This command downloads service from https://github.com/some/service and puts in the current directory.
+```
+sls install --url https://github.com/some/service
+```
+#### Options:
+
+* --url or -u: Service's GitHub URL. It is a required attribute.
+* --name or -n: Service name.
+
+
+### Serverless Deploy
+sls deploy deploys entire service to the cloud.
+
+To deploy entire service, use the below-given command.
+```
+sls deploy
+```
+#### Options
+
+* --noDeploy or -n: Skips deployment steps and puts artifacts in the .serverless directory.
+* --verbose or -v: Shows all events during deployment.
+* --function or -f: If your changes are function level, i.e., you have not made any changes to serverless.yaml, then go with this argument. This will only deploy the specified function.
+```
+sls deploy function -f myFunction 
+```
+
+### Serverles Invoke
+sls invoke command invokes a functions and prints its results.
+
+The below command invokes fnName function and prints its result to the terminal.
+```
+sls invoke --function fnName
+```
+#### Options
+
+* --function or -f : Function name to be invoked. This argument is required.
+* --path or -p: Specifies json file path which has input data to be sent to the invoked function.
+
+
+### Plugin Commands
+Serverless plugins can be managed using CLI.
+
+-----------------
+
+- To list all plugins in plugins repository,
+```
+sls plugin list
+```
+- To search for a specific plugin,
+```
+sls plugin search --query <plugin_name>
+```
+- To install a plugin,
+```
+sls plugin install --name pluginName
+```
+- If you want a specific version then use <pluginname>@<version>.
+
+- To uninstall a plugin,
+```
+sls plugin uninstall --name pluginName
+```
+### Serverless Print
+print command prints serverless.yaml.
+e.g.,
+```
+sls print
+```
+#### Options
+
+* --format: To format configuration in given format ("yaml", "json", "text"). Default is yaml.
+* --path: To print any sub-value. (eg: "provider.name").
+* --transform: Transform-function to be applied to the value (only "keys" is supported).
+
+
+### ServerLess Events
+
+In the context of the Serverless Framework and serverless applications, "events" refer to the triggers or sources of input that initiate the execution of a serverless function or service. Events are crucial for defining when and how serverless functions should run. Here are some key notes on serverless events:
+
+1. **Event-Driven Architecture:** Serverless applications are designed around an event-driven architecture. Events can be various types of actions or occurrences, such as HTTP requests, changes in data, file uploads, database updates, and more. These events trigger serverless functions to respond.
+
+2. **Supported Event Sources:** The Serverless Framework provides support for various event sources, depending on the cloud provider you're using. Common event sources include:
+
+   - **HTTP Endpoints:** Events can be triggered by HTTP requests, making serverless functions accessible via web APIs.
+   - **Scheduled Events:** Functions can be triggered at specified intervals, using cron expressions or similar scheduling mechanisms.
+   - **Data Changes:** Events can be triggered when data in a database, such as AWS DynamoDB or Azure Cosmos DB, is modified.
+   - **File Uploads:** Functions can be triggered when files are uploaded to cloud storage, like Amazon S3 or Azure Blob Storage.
+   - **Custom Events:** You can define custom events and event sources using cloud-specific services or external integrations.
+
+3. **Event Configuration:** When defining serverless functions in your serverless.yml (Serverless Framework configuration file), you specify the events that should trigger those functions. For example:
+
+   ```yaml
+   functions:
+     myFunction:
+       handler: handler.myFunction
+       events:
+         - http:
+             path: /my-api-endpoint
+             method: get
+         - schedule:
+             rate: cron(0 12 * * ? *)  # Trigger every day at 12 PM
+   ```
+
+4. **Serverless Providers:** Different cloud providers offer their own set of event sources. AWS, Azure, Google Cloud, and other providers have their unique services for triggering serverless functions.
+
+5. **Event Payload:** Events typically come with a payload of data that can be processed by the serverless function. The payload might contain information about the event source, input parameters, and other relevant data.
+
+6. **Handling Failures:** Serverless applications should be designed to handle failures gracefully. If an event-triggered function encounters an error, you can configure retries, error handling, and, in some cases, dead-letter queues to capture failed events for analysis.
+
+7. **Scalability:** Serverless functions can scale automatically based on the volume of incoming events. The cloud provider manages the underlying infrastructure, ensuring that functions can handle high loads.
+
+8. **Cost-Efficiency:** Serverless applications are often cost-efficient because you only pay for the actual execution time of functions. When no events are triggering functions, there are no associated costs.
+
+9. **Logging and Monitoring:** Effective event handling requires robust logging and monitoring to track the execution of functions, troubleshoot issues, and gather insights about your serverless application's behavior.
+
+In summary, serverless events are at the core of serverless architecture, allowing serverless functions to respond to external triggers and provide on-demand, event-driven functionality. These events play a crucial role in building responsive and cost-effective applications.
+
+
+[Follow the link](https://www.serverless.com/framework/docs/providers/aws/guide/events)
